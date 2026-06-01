@@ -3,580 +3,165 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Cédric Clérentin–Vieille | Étudiant en informatique</title>
+<title>Cédric Clérentin–Vieille | Développeur d'applications</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
-<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display:ital@0;1&family=DM+Mono:wght@400;500&family=Outfit:wght@300;400;500;600&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=Instrument+Sans:ital,wght@0,400;0,500;1,400&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
 <style>
-  :root {
-    --bg: #0a0a0f;
-    --bg2: #111118;
-    --bg3: #18181f;
-    --accent: #6c63ff;
-    --accent2: #a78bfa;
-    --accent3: #38bdf8;
-    --text: #e8e8f0;
-    --muted: #8888aa;
-    --border: rgba(108,99,255,0.2);
-    --card: rgba(24,24,31,0.8);
-  }
-
-  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
-
-  html { scroll-behavior: smooth; }
-
-  body {
-    background: var(--bg);
-    color: var(--text);
-    font-family: 'Outfit', sans-serif;
-    font-weight: 300;
-    line-height: 1.7;
-    overflow-x: hidden;
-  }
-
-  /* Grid noise texture overlay */
-  body::before {
-    content: '';
-    position: fixed;
-    inset: 0;
-    background-image:
-      linear-gradient(rgba(108,99,255,0.03) 1px, transparent 1px),
-      linear-gradient(90deg, rgba(108,99,255,0.03) 1px, transparent 1px);
-    background-size: 40px 40px;
-    pointer-events: none;
-    z-index: 0;
-  }
-
-  /* NAV */
-  nav {
-    position: fixed;
-    top: 0; left: 0; right: 0;
-    z-index: 100;
-    padding: 1rem 2rem;
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    background: rgba(10,10,15,0.85);
-    backdrop-filter: blur(12px);
-    border-bottom: 1px solid var(--border);
-  }
-  .nav-logo {
-    font-family: 'DM Mono', monospace;
-    font-size: 0.85rem;
-    color: var(--accent2);
-    letter-spacing: 0.05em;
-  }
-  .nav-links { display: flex; gap: 2rem; list-style: none; }
-  .nav-links a {
-    color: var(--muted);
-    text-decoration: none;
-    font-size: 0.85rem;
-    font-weight: 400;
-    letter-spacing: 0.05em;
-    transition: color 0.2s;
-  }
-  .nav-links a:hover { color: var(--accent2); }
-
-  /* SECTIONS */
-  section { position: relative; z-index: 1; }
-
-  /* HERO */
-  #hero {
-    min-height: 100vh;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
-    text-align: center;
-    padding: 6rem 2rem 4rem;
-  }
-  .hero-tag {
-    font-family: 'DM Mono', monospace;
-    font-size: 0.75rem;
-    color: var(--accent);
-    letter-spacing: 0.2em;
-    text-transform: uppercase;
-    border: 1px solid var(--border);
-    padding: 0.4rem 1rem;
-    border-radius: 100px;
-    margin-bottom: 2rem;
-    display: inline-block;
-  }
-  .hero-avatar {
-    width: 100px;
-    height: 100px;
-    border-radius: 50%;
-    background: linear-gradient(135deg, var(--accent), var(--accent3));
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    font-family: 'DM Serif Display', serif;
-    font-size: 2.2rem;
-    color: white;
-    margin: 0 auto 2rem;
-    position: relative;
-    box-shadow: 0 0 40px rgba(108,99,255,0.4);
-  }
-  .hero-avatar::after {
-    content: '';
-    position: absolute;
-    inset: -4px;
-    border-radius: 50%;
-    border: 1px solid rgba(108,99,255,0.3);
-  }
-  h1 {
-    font-family: 'DM Serif Display', serif;
-    font-size: clamp(2.5rem, 6vw, 5rem);
-    font-weight: 400;
-    line-height: 1.1;
-    letter-spacing: -0.02em;
-    margin-bottom: 0.5rem;
-    background: linear-gradient(135deg, var(--text) 40%, var(--accent2));
-    -webkit-background-clip: text;
-    -webkit-text-fill-color: transparent;
-    background-clip: text;
-  }
-  .hero-sub {
-    font-family: 'DM Mono', monospace;
-    font-size: 0.95rem;
-    color: var(--accent3);
-    margin-bottom: 1.5rem;
-    letter-spacing: 0.05em;
-  }
-  .hero-desc {
-    max-width: 600px;
-    color: var(--muted);
-    font-size: 1rem;
-    margin: 0 auto 2.5rem;
-  }
-  .hero-cta {
-    display: flex;
-    gap: 1rem;
-    justify-content: center;
-    flex-wrap: wrap;
-  }
-  .btn {
-    padding: 0.75rem 1.75rem;
-    border-radius: 8px;
-    font-family: 'Outfit', sans-serif;
-    font-size: 0.9rem;
-    font-weight: 500;
-    text-decoration: none;
-    transition: all 0.2s;
-    cursor: pointer;
-    display: inline-flex;
-    align-items: center;
-    gap: 0.5rem;
-  }
-  .btn-primary {
-    background: var(--accent);
-    color: white;
-    border: none;
-    box-shadow: 0 0 20px rgba(108,99,255,0.3);
-  }
-  .btn-primary:hover { background: var(--accent2); box-shadow: 0 0 30px rgba(108,99,255,0.5); transform: translateY(-1px); }
-  .btn-outline {
-    background: transparent;
-    color: var(--text);
-    border: 1px solid var(--border);
-  }
-  .btn-outline:hover { border-color: var(--accent2); color: var(--accent2); transform: translateY(-1px); }
-
-  /* CONTENT SECTIONS */
-  .content-section {
-    max-width: 900px;
-    margin: 0 auto;
-    padding: 5rem 2rem;
-  }
-  .section-label {
-    font-family: 'DM Mono', monospace;
-    font-size: 0.72rem;
-    color: var(--accent);
-    letter-spacing: 0.2em;
-    text-transform: uppercase;
-    margin-bottom: 1rem;
-  }
-  h2 {
-    font-family: 'DM Serif Display', serif;
-    font-size: clamp(1.8rem, 4vw, 2.8rem);
-    font-weight: 400;
-    color: var(--text);
-    margin-bottom: 2.5rem;
-    line-height: 1.2;
-  }
-  .divider {
-    width: 100%;
-    height: 1px;
-    background: linear-gradient(90deg, transparent, var(--border), transparent);
-    margin: 0;
-  }
-
-  /* ABOUT */
-  .about-grid {
-    display: grid;
-    grid-template-columns: 1fr 1fr;
-    gap: 2rem;
-  }
-  .about-card {
-    background: var(--card);
-    border: 1px solid var(--border);
-    border-radius: 16px;
-    padding: 1.5rem;
-    backdrop-filter: blur(8px);
-  }
-  .about-card h3 {
-    font-family: 'DM Mono', monospace;
-    font-size: 0.8rem;
-    color: var(--accent2);
-    letter-spacing: 0.1em;
-    margin-bottom: 0.75rem;
-  }
-  .about-card p { color: var(--muted); font-size: 0.95rem; }
-  .about-full {
-    grid-column: 1 / -1;
-    background: var(--card);
-    border: 1px solid var(--border);
-    border-radius: 16px;
-    padding: 1.5rem;
-    color: var(--muted);
-    font-size: 0.95rem;
-  }
-
-  /* TIMELINE */
-  .timeline { position: relative; padding-left: 2rem; }
-  .timeline::before {
-    content: '';
-    position: absolute;
-    left: 0; top: 0; bottom: 0;
-    width: 1px;
-    background: linear-gradient(to bottom, var(--accent), transparent);
-  }
-  .timeline-item {
-    position: relative;
-    margin-bottom: 2.5rem;
-  }
-  .timeline-item::before {
-    content: '';
-    position: absolute;
-    left: -2.35rem;
-    top: 0.4rem;
-    width: 10px;
-    height: 10px;
-    border-radius: 50%;
-    background: var(--accent);
-    box-shadow: 0 0 10px var(--accent);
-  }
-  .timeline-date {
-    font-family: 'DM Mono', monospace;
-    font-size: 0.75rem;
-    color: var(--accent3);
-    letter-spacing: 0.1em;
-    margin-bottom: 0.25rem;
-  }
-  .timeline-title {
-    font-weight: 500;
-    font-size: 1rem;
-    color: var(--text);
-    margin-bottom: 0.25rem;
-  }
-  .timeline-desc { color: var(--muted); font-size: 0.9rem; }
-
-  /* FORMATION BTS */
-  .bts-grid {
-    display: grid;
-    grid-template-columns: 1fr 1fr;
-    gap: 1rem;
-    margin-bottom: 1.5rem;
-  }
-  .bts-card {
-    background: var(--card);
-    border: 1px solid var(--border);
-    border-radius: 12px;
-    padding: 1.25rem;
-  }
-  .bts-card h4 {
-    font-family: 'DM Mono', monospace;
-    font-size: 0.78rem;
-    color: var(--accent2);
-    margin-bottom: 0.5rem;
-    letter-spacing: 0.08em;
-  }
-  .bts-card p { color: var(--muted); font-size: 0.88rem; }
-
-  /* METIERS */
-  .metiers-grid {
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-    gap: 1rem;
-  }
-  .metier-card {
-    background: var(--card);
-    border: 1px solid var(--border);
-    border-radius: 16px;
-    padding: 1.5rem;
-    transition: all 0.3s;
-    cursor: pointer;
-    text-decoration: none;
-  }
-  .metier-card:hover {
-    border-color: var(--accent);
-    transform: translateY(-4px);
-    box-shadow: 0 10px 30px rgba(108,99,255,0.2);
-  }
-  .metier-icon {
-    font-size: 2rem;
-    margin-bottom: 0.75rem;
-    display: block;
-  }
-  .metier-card h3 {
-    font-weight: 500;
-    font-size: 1rem;
-    color: var(--text);
-    margin-bottom: 0.5rem;
-  }
-  .metier-card p { color: var(--muted); font-size: 0.85rem; }
-  .metier-tag {
-    display: inline-block;
-    margin-top: 0.75rem;
-    font-family: 'DM Mono', monospace;
-    font-size: 0.7rem;
-    color: var(--accent);
-    border: 1px solid var(--border);
-    padding: 0.2rem 0.6rem;
-    border-radius: 100px;
-  }
-
-  /* COMPETENCES */
-  .skills-grid {
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
-    gap: 0.75rem;
-  }
-  .skill-pill {
-    background: var(--bg3);
-    border: 1px solid var(--border);
-    border-radius: 10px;
-    padding: 0.75rem 1rem;
-    text-align: center;
-    transition: all 0.2s;
-  }
-  .skill-pill:hover {
-    border-color: var(--accent2);
-    background: rgba(108,99,255,0.1);
-  }
-  .skill-pill .skill-name {
-    font-size: 0.88rem;
-    font-weight: 500;
-    color: var(--text);
-    display: block;
-    margin-bottom: 0.25rem;
-  }
-  .skill-pill .skill-cat {
-    font-family: 'DM Mono', monospace;
-    font-size: 0.68rem;
-    color: var(--muted);
-  }
-
-  /* REALISATIONS */
-  .reals-grid {
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
-    gap: 1rem;
-  }
-  .real-card {
-    background: var(--card);
-    border: 1px solid var(--border);
-    border-radius: 16px;
-    padding: 1.75rem;
-    position: relative;
-    overflow: hidden;
-    transition: all 0.3s;
-  }
-  .real-card::before {
-    content: '';
-    position: absolute;
-    top: 0; left: 0; right: 0;
-    height: 3px;
-    background: linear-gradient(90deg, var(--accent), var(--accent3));
-  }
-  .real-card:hover {
-    transform: translateY(-3px);
-    box-shadow: 0 12px 35px rgba(108,99,255,0.15);
-  }
-  .real-badge {
-    font-family: 'DM Mono', monospace;
-    font-size: 0.7rem;
-    color: var(--accent3);
-    letter-spacing: 0.1em;
-    text-transform: uppercase;
-    margin-bottom: 0.75rem;
-  }
-  .real-card h3 {
-    font-weight: 500;
-    font-size: 1.1rem;
-    color: var(--text);
-    margin-bottom: 0.5rem;
-  }
-  .real-card p { color: var(--muted); font-size: 0.88rem; }
-  .real-soon {
-    display: inline-block;
-    margin-top: 1rem;
-    font-size: 0.75rem;
-    color: var(--muted);
-    border: 1px solid rgba(255,255,255,0.1);
-    padding: 0.25rem 0.75rem;
-    border-radius: 100px;
-  }
-
-  /* VEILLE */
-  .veille-intro {
-    background: var(--card);
-    border: 1px solid var(--border);
-    border-radius: 16px;
-    padding: 1.5rem;
-    margin-bottom: 1.5rem;
-  }
-  .veille-intro h3 {
-    font-family: 'DM Mono', monospace;
-    font-size: 0.8rem;
-    color: var(--accent2);
-    letter-spacing: 0.1em;
-    margin-bottom: 0.75rem;
-  }
-  .veille-intro p { color: var(--muted); font-size: 0.92rem; }
-  .tools-row {
-    display: flex;
-    flex-wrap: wrap;
-    gap: 0.5rem;
-    margin-top: 1rem;
-  }
-  .tool-tag {
-    background: rgba(108,99,255,0.1);
-    border: 1px solid var(--border);
-    border-radius: 100px;
-    padding: 0.3rem 0.85rem;
-    font-family: 'DM Mono', monospace;
-    font-size: 0.75rem;
-    color: var(--accent2);
-  }
-  .veille-themes { display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; }
-  .theme-card {
-    background: var(--bg3);
-    border: 1px solid var(--border);
-    border-radius: 16px;
-    padding: 1.5rem;
-  }
-  .theme-card h3 {
-    font-weight: 500;
-    font-size: 1rem;
-    color: var(--text);
-    margin-bottom: 0.75rem;
-    display: flex;
-    align-items: center;
-    gap: 0.5rem;
-  }
-  .theme-card p { color: var(--muted); font-size: 0.88rem; line-height: 1.6; }
-
-  /* CV */
-  .cv-section {
-    text-align: center;
-    background: var(--card);
-    border: 1px solid var(--border);
-    border-radius: 20px;
-    padding: 3rem;
-  }
-  .cv-section p { color: var(--muted); margin-bottom: 1.5rem; }
-
-  /* CONTACT */
-  .contact-grid {
-    display: grid;
-    grid-template-columns: 1fr 1.5fr;
-    gap: 3rem;
-    align-items: start;
-  }
-  .contact-info h3 {
-    font-family: 'DM Serif Display', serif;
-    font-size: 1.5rem;
-    margin-bottom: 1rem;
-  }
-  .contact-info p { color: var(--muted); font-size: 0.95rem; margin-bottom: 1.5rem; }
-  form { display: flex; flex-direction: column; gap: 1rem; }
-  .form-group { display: flex; flex-direction: column; gap: 0.4rem; }
-  .form-group label {
-    font-family: 'DM Mono', monospace;
-    font-size: 0.75rem;
-    color: var(--muted);
-    letter-spacing: 0.1em;
-  }
-  .form-group input,
-  .form-group textarea {
-    background: var(--bg3);
-    border: 1px solid var(--border);
-    border-radius: 10px;
-    padding: 0.75rem 1rem;
-    color: var(--text);
-    font-family: 'Outfit', sans-serif;
-    font-size: 0.95rem;
-    transition: border-color 0.2s;
-    resize: vertical;
-  }
-  .form-group input:focus,
-  .form-group textarea:focus {
-    outline: none;
-    border-color: var(--accent);
-  }
-  .form-group textarea { min-height: 130px; }
-  .form-success {
-    display: none;
-    background: rgba(56,189,248,0.1);
-    border: 1px solid rgba(56,189,248,0.3);
-    border-radius: 10px;
-    padding: 1rem;
-    color: var(--accent3);
-    font-size: 0.9rem;
-    text-align: center;
-  }
-
-  /* FOOTER */
-  footer {
-    text-align: center;
-    padding: 2rem;
-    color: var(--muted);
-    font-size: 0.8rem;
-    font-family: 'DM Mono', monospace;
-    border-top: 1px solid var(--border);
-    position: relative;
-    z-index: 1;
-  }
-
-  /* ANIMATIONS */
-  @keyframes fadeUp {
-    from { opacity: 0; transform: translateY(24px); }
-    to { opacity: 1; transform: translateY(0); }
-  }
-  .fade-up { animation: fadeUp 0.7s ease forwards; }
-  .fade-up-2 { animation: fadeUp 0.7s 0.15s ease both; }
-  .fade-up-3 { animation: fadeUp 0.7s 0.3s ease both; }
-  .fade-up-4 { animation: fadeUp 0.7s 0.45s ease both; }
-
-  /* SCROLL REVEAL */
-  .reveal { opacity: 0; transform: translateY(20px); transition: opacity 0.6s, transform 0.6s; }
-  .reveal.visible { opacity: 1; transform: none; }
-
-  @media (max-width: 700px) {
-    .about-grid, .bts-grid, .veille-themes, .contact-grid { grid-template-columns: 1fr; }
-    .nav-links { display: none; }
-  }
+:root {
+  --ink: #0d0d14;
+  --paper: #f7f5f0;
+  --cream: #edeae3;
+  --accent: #3b5bdb;
+  --accent-light: #dde3ff;
+  --green: #2f9e44;
+  --green-light: #d3f9d8;
+  --amber: #e67700;
+  --amber-light: #fff3bf;
+  --text: #1a1a2e;
+  --muted: #6b6b80;
+  --border: rgba(13,13,20,0.1);
+  --card: #ffffff;
+  --serif: 'Syne', sans-serif;
+  --body: 'Instrument Sans', sans-serif;
+  --mono: 'JetBrains Mono', monospace;
+}
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0;}
+html{scroll-behavior:smooth;}
+body{background:var(--paper);color:var(--text);font-family:var(--body);font-size:16px;line-height:1.7;overflow-x:hidden;}
+.cursor-glow{width:400px;height:400px;background:radial-gradient(circle,rgba(59,91,219,0.07) 0%,transparent 70%);position:fixed;pointer-events:none;z-index:0;transform:translate(-50%,-50%);border-radius:50%;}
+nav{position:fixed;top:0;left:0;right:0;z-index:100;padding:0 3rem;height:64px;display:flex;align-items:center;justify-content:space-between;background:rgba(247,245,240,0.92);backdrop-filter:blur(16px);border-bottom:1px solid var(--border);}
+.nav-logo{font-family:var(--serif);font-weight:800;font-size:1rem;color:var(--ink);}
+.nav-logo span{color:var(--accent);}
+.nav-links{display:flex;gap:.25rem;list-style:none;}
+.nav-links a{padding:.4rem .85rem;border-radius:100px;color:var(--muted);text-decoration:none;font-size:.85rem;font-weight:500;transition:all .2s;}
+.nav-links a:hover{background:var(--accent-light);color:var(--accent);}
+#hero{min-height:100vh;display:grid;grid-template-columns:1fr 1fr;align-items:center;padding:6rem 4rem 4rem;gap:4rem;position:relative;overflow:hidden;}
+.hero-bg{position:absolute;inset:0;z-index:0;background:radial-gradient(ellipse 60% 50% at 80% 50%,rgba(59,91,219,0.07) 0%,transparent 60%),radial-gradient(ellipse 40% 40% at 20% 80%,rgba(47,158,68,0.06) 0%,transparent 60%);}
+.hero-content{position:relative;z-index:1;}
+.hero-eyebrow{display:inline-flex;align-items:center;gap:.5rem;font-family:var(--mono);font-size:.75rem;color:var(--accent);letter-spacing:.08em;background:var(--accent-light);padding:.35rem 1rem;border-radius:100px;margin-bottom:1.75rem;animation:slideDown .6s ease both;}
+.hero-eyebrow::before{content:'';width:6px;height:6px;background:var(--accent);border-radius:50%;animation:pulse 2s infinite;}
+@keyframes pulse{0%,100%{opacity:1;transform:scale(1);}50%{opacity:.5;transform:scale(.8);}}
+h1{font-family:var(--serif);font-size:clamp(2.8rem,5vw,4.5rem);font-weight:800;line-height:1.05;letter-spacing:-.04em;color:var(--ink);animation:slideUp .7s .1s ease both;}
+h1 em{font-style:italic;color:var(--accent);}
+.hero-sub{margin:1.25rem 0 2rem;font-size:1.05rem;color:var(--muted);max-width:480px;animation:slideUp .7s .2s ease both;line-height:1.6;}
+.hero-cta{display:flex;gap:.75rem;flex-wrap:wrap;animation:slideUp .7s .3s ease both;}
+.btn{display:inline-flex;align-items:center;gap:.5rem;padding:.7rem 1.5rem;border-radius:10px;font-family:var(--body);font-size:.9rem;font-weight:500;text-decoration:none;border:none;cursor:pointer;transition:all .2s;position:relative;overflow:hidden;}
+.btn::after{content:'';position:absolute;inset:0;background:rgba(255,255,255,.15);opacity:0;transition:opacity .2s;}
+.btn:hover::after{opacity:1;}
+.btn-primary{background:var(--accent);color:white;box-shadow:0 4px 20px rgba(59,91,219,.3);}
+.btn-primary:hover{transform:translateY(-2px);box-shadow:0 8px 30px rgba(59,91,219,.4);}
+.btn-ghost{background:var(--card);color:var(--text);border:1.5px solid var(--border);}
+.btn-ghost:hover{border-color:var(--accent);color:var(--accent);transform:translateY(-2px);}
+.hero-visual{position:relative;z-index:1;animation:float .8s .4s ease both;}
+.code-card{background:var(--ink);border-radius:20px;padding:2rem;box-shadow:0 30px 80px rgba(13,13,20,.25);overflow:hidden;position:relative;}
+.code-card::before{content:'';position:absolute;top:0;left:0;right:0;height:3px;background:linear-gradient(90deg,var(--accent),#7c3aed,#2f9e44);}
+.code-dots{display:flex;gap:6px;margin-bottom:1.25rem;}
+.code-dots span{width:10px;height:10px;border-radius:50%;}
+.code-dots span:nth-child(1){background:#ff5f57;}
+.code-dots span:nth-child(2){background:#febc2e;}
+.code-dots span:nth-child(3){background:#28c840;}
+.code-line{font-family:var(--mono);font-size:.82rem;line-height:1.9;display:block;}
+.c-comment{color:#636e7b;}.c-keyword{color:#c792ea;}.c-string{color:#c3e88d;}.c-func{color:#82aaff;}.c-var{color:#eeffff;}.c-op{color:#89ddff;}
+.hero-stats{display:grid;grid-template-columns:repeat(3,1fr);gap:1rem;margin-top:1.25rem;}
+.stat-card{background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.08);border-radius:12px;padding:1rem;text-align:center;}
+.stat-num{font-family:var(--serif);font-size:1.5rem;font-weight:800;color:white;display:block;}
+.stat-label{font-size:.72rem;color:#636e7b;font-family:var(--mono);}
+.section{max-width:1000px;margin:0 auto;padding:6rem 2rem;}
+.section-sep{width:100%;height:1px;background:var(--border);}
+.tag{display:inline-flex;align-items:center;gap:.4rem;font-family:var(--mono);font-size:.72rem;color:var(--muted);letter-spacing:.12em;margin-bottom:1rem;}
+.tag::before{content:'—';color:var(--accent);}
+h2{font-family:var(--serif);font-size:clamp(2rem,4vw,3rem);font-weight:800;letter-spacing:-.04em;line-height:1.1;color:var(--ink);margin-bottom:.5rem;}
+.section-lead{color:var(--muted);font-size:1rem;margin-bottom:3rem;max-width:560px;line-height:1.65;}
+.about-layout{display:grid;grid-template-columns:1fr 1fr;gap:1.5rem;}
+.about-card{background:var(--card);border:1.5px solid var(--border);border-radius:18px;padding:1.75rem;transition:all .3s;}
+.about-card:hover{border-color:var(--accent);transform:translateY(-3px);box-shadow:0 12px 40px rgba(59,91,219,.08);}
+.about-card.wide{grid-column:1/-1;}
+.card-icon{font-size:1.5rem;margin-bottom:.75rem;display:block;}
+.about-card h3{font-family:var(--serif);font-size:1rem;font-weight:700;color:var(--ink);margin-bottom:.5rem;}
+.about-card p{color:var(--muted);font-size:.92rem;line-height:1.7;}
+.timeline{position:relative;padding-left:2.5rem;}
+.timeline::before{content:'';position:absolute;left:6px;top:8px;bottom:0;width:2px;background:linear-gradient(to bottom,var(--accent),transparent);}
+.tl-item{position:relative;margin-bottom:2.5rem;}
+.tl-dot{position:absolute;left:-2.35rem;top:5px;width:14px;height:14px;border-radius:50%;background:var(--card);border:2.5px solid var(--accent);transition:all .3s;}
+.tl-item:hover .tl-dot{background:var(--accent);box-shadow:0 0 0 4px var(--accent-light);}
+.tl-date{font-family:var(--mono);font-size:.72rem;color:var(--accent);letter-spacing:.08em;margin-bottom:.3rem;}
+.tl-title{font-family:var(--serif);font-size:1.05rem;font-weight:700;color:var(--ink);margin-bottom:.25rem;}
+.tl-desc{color:var(--muted);font-size:.9rem;line-height:1.6;}
+.bts-grid{display:grid;grid-template-columns:1fr 1fr;gap:1rem;}
+.bts-card{background:var(--card);border:1.5px solid var(--border);border-radius:16px;padding:1.5rem;transition:all .25s;}
+.bts-card:hover{border-color:var(--accent);}
+.bts-card h4{font-family:var(--serif);font-size:.9rem;font-weight:700;color:var(--ink);margin-bottom:.5rem;}
+.bts-card p{color:var(--muted);font-size:.88rem;line-height:1.6;}
+.metiers-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:1.25rem;}
+.metier-card{background:var(--card);border:1.5px solid var(--border);border-radius:20px;padding:1.75rem;transition:all .3s;cursor:pointer;text-decoration:none;display:block;}
+.metier-card:hover{border-color:var(--accent);transform:translateY(-5px);box-shadow:0 16px 50px rgba(59,91,219,.12);}
+.metier-card .icon{width:48px;height:48px;border-radius:14px;background:var(--accent-light);color:var(--accent);display:flex;align-items:center;justify-content:center;font-size:1.4rem;margin-bottom:1rem;transition:all .3s;}
+.metier-card h3{font-family:var(--serif);font-size:1rem;font-weight:700;color:var(--ink);margin-bottom:.4rem;}
+.metier-card p{color:var(--muted);font-size:.85rem;line-height:1.6;}
+.metier-badge{display:inline-block;margin-top:1rem;font-family:var(--mono);font-size:.7rem;padding:.25rem .7rem;border-radius:100px;background:var(--accent-light);color:var(--accent);}
+.skills-section{display:flex;flex-direction:column;gap:2.5rem;}
+.skill-group-title{font-family:var(--mono);font-size:.72rem;color:var(--muted);letter-spacing:.15em;margin-bottom:1rem;text-transform:uppercase;}
+.skills-wrap{display:flex;flex-wrap:wrap;gap:.6rem;}
+.skill-tag{display:flex;align-items:center;gap:.5rem;background:var(--card);border:1.5px solid var(--border);border-radius:10px;padding:.5rem 1rem;font-size:.88rem;font-weight:500;color:var(--text);transition:all .2s;cursor:default;}
+.skill-tag:hover{border-color:var(--accent);background:var(--accent-light);color:var(--accent);transform:translateY(-2px);}
+.skill-tag .dot{width:7px;height:7px;border-radius:50%;flex-shrink:0;}
+.dot-lang{background:var(--accent);}.dot-db{background:var(--green);}.dot-tool{background:var(--amber);}
+.reals-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:1.25rem;}
+.real-card{background:var(--card);border:1.5px solid var(--border);border-radius:20px;padding:1.75rem;position:relative;overflow:hidden;transition:all .3s;}
+.real-card::before{content:'';position:absolute;top:0;left:0;right:0;height:4px;background:linear-gradient(90deg,var(--accent),#7c3aed);}
+.real-card:hover{transform:translateY(-4px);box-shadow:0 16px 50px rgba(13,13,20,.08);}
+.real-num{font-family:var(--mono);font-size:.72rem;color:var(--muted);letter-spacing:.1em;margin-bottom:1rem;}
+.real-card h3{font-family:var(--serif);font-size:1.05rem;font-weight:700;color:var(--ink);margin-bottom:.5rem;}
+.real-card p{color:var(--muted);font-size:.88rem;line-height:1.6;}
+.real-status{display:inline-flex;align-items:center;gap:.4rem;margin-top:1.25rem;font-size:.78rem;font-family:var(--mono);padding:.3rem .75rem;border-radius:100px;}
+.status-soon{background:var(--amber-light);color:var(--amber);}.status-wip{background:var(--accent-light);color:var(--accent);}.status-done{background:var(--green-light);color:var(--green);}
+.veille-devices{background:var(--card);border:1.5px solid var(--border);border-radius:18px;padding:1.75rem;margin-bottom:1.5rem;}
+.veille-devices h3{font-family:var(--serif);font-size:1rem;font-weight:700;color:var(--ink);margin-bottom:.75rem;}
+.veille-devices p{color:var(--muted);font-size:.92rem;line-height:1.7;margin-bottom:1rem;}
+.tools-row{display:flex;flex-wrap:wrap;gap:.5rem;}
+.tool-chip{background:var(--cream);border:1px solid var(--border);border-radius:100px;padding:.3rem .9rem;font-family:var(--mono);font-size:.73rem;color:var(--muted);transition:all .2s;}
+.tool-chip:hover{background:var(--accent-light);color:var(--accent);border-color:var(--accent);}
+.themes-grid{display:grid;grid-template-columns:1fr 1fr;gap:1.25rem;}
+.theme-card{background:var(--card);border:1.5px solid var(--border);border-radius:18px;padding:1.75rem;transition:all .25s;}
+.theme-card:hover{border-color:var(--accent);}
+.theme-card h3{font-family:var(--serif);font-size:1rem;font-weight:700;color:var(--ink);margin-bottom:.75rem;display:flex;align-items:center;gap:.5rem;}
+.theme-card p{color:var(--muted);font-size:.88rem;line-height:1.7;}
+.cv-box{background:var(--ink);border-radius:24px;padding:3.5rem;text-align:center;position:relative;overflow:hidden;}
+.cv-box::before{content:'';position:absolute;top:0;left:0;right:0;height:4px;background:linear-gradient(90deg,var(--accent),#7c3aed,var(--green));}
+.cv-box h3{font-family:var(--serif);font-size:1.5rem;font-weight:800;color:white;margin-bottom:.75rem;}
+.cv-box p{color:#636e7b;font-size:.95rem;margin-bottom:2rem;}
+.contact-layout{display:grid;grid-template-columns:1fr 1.6fr;gap:4rem;align-items:start;}
+.contact-info h3{font-family:var(--serif);font-size:1.5rem;font-weight:800;color:var(--ink);margin-bottom:.75rem;line-height:1.2;}
+.contact-info p{color:var(--muted);font-size:.95rem;margin-bottom:1.5rem;line-height:1.65;}
+.contact-badge{display:inline-flex;align-items:center;gap:.5rem;background:var(--green-light);color:var(--green);padding:.5rem 1rem;border-radius:100px;font-family:var(--mono);font-size:.78rem;}
+.contact-badge::before{content:'';width:7px;height:7px;border-radius:50%;background:var(--green);animation:pulse 2s infinite;}
+form{display:flex;flex-direction:column;gap:1rem;}
+.form-row{display:grid;grid-template-columns:1fr 1fr;gap:1rem;}
+.fgroup{display:flex;flex-direction:column;gap:.4rem;}
+.fgroup label{font-family:var(--mono);font-size:.72rem;color:var(--muted);letter-spacing:.1em;}
+.fgroup input,.fgroup textarea{background:var(--card);border:1.5px solid var(--border);border-radius:12px;padding:.75rem 1rem;color:var(--text);font-family:var(--body);font-size:.95rem;transition:all .2s;resize:vertical;}
+.fgroup input:focus,.fgroup textarea:focus{outline:none;border-color:var(--accent);box-shadow:0 0 0 3px rgba(59,91,219,.08);}
+.fgroup textarea{min-height:120px;}
+.form-success{display:none;background:var(--green-light);border:1px solid rgba(47,158,68,.3);border-radius:12px;padding:1rem;color:var(--green);font-size:.9rem;text-align:center;margin-top:.5rem;}
+footer{text-align:center;padding:2rem;color:var(--muted);font-size:.78rem;font-family:var(--mono);border-top:1px solid var(--border);}
+@keyframes slideDown{from{opacity:0;transform:translateY(-12px);}to{opacity:1;transform:none;}}
+@keyframes slideUp{from{opacity:0;transform:translateY(16px);}to{opacity:1;transform:none;}}
+@keyframes float{from{opacity:0;transform:translateY(20px);}to{opacity:1;transform:none;}}
+.reveal{opacity:0;transform:translateY(24px);transition:opacity .65s,transform .65s;}
+.reveal.v{opacity:1;transform:none;}
+.reveal-d1{transition-delay:.1s;}.reveal-d2{transition-delay:.2s;}.reveal-d3{transition-delay:.3s;}
+.type-cursor{display:inline-block;width:2px;height:1em;background:var(--accent);margin-left:2px;vertical-align:text-bottom;animation:blink 1s step-end infinite;}
+@keyframes blink{50%{opacity:0;}}
+@media(max-width:768px){#hero{grid-template-columns:1fr;padding:5rem 1.5rem 3rem;}.hero-visual{display:none;}.about-layout,.bts-grid,.metiers-grid,.reals-grid,.themes-grid,.contact-layout{grid-template-columns:1fr;}.about-card.wide{grid-column:1;}.nav-links{display:none;}.section{padding:4rem 1.5rem;}.form-row{grid-template-columns:1fr;}}
 </style>
 </head>
 <body>
-
+<div class="cursor-glow" id="glow"></div>
 <nav>
-  <span class="nav-logo">ccv.dev</span>
+  <span class="nav-logo">ccv<span>.</span>dev</span>
   <ul class="nav-links">
     <li><a href="#about">À propos</a></li>
     <li><a href="#parcours">Parcours</a></li>
-    <li><a href="#formation">Formation</a></li>
     <li><a href="#metiers">Métiers</a></li>
     <li><a href="#competences">Compétences</a></li>
     <li><a href="#realisations">Réalisations</a></li>
@@ -584,319 +169,148 @@
     <li><a href="#contact">Contact</a></li>
   </ul>
 </nav>
-
-<!-- HERO -->
 <section id="hero">
-  <div class="hero-tag fade-up">BTS SIO · Option SLAM · Promotion 2025–2026</div>
-  <div class="hero-avatar fade-up-2">CCV</div>
-  <h1 class="fade-up-2">Cédric<br>Clérentin–Vieille</h1>
-  <p class="hero-sub fade-up-3">Étudiant en informatique · Développement d'applications</p>
-  <p class="hero-desc fade-up-3">Passionné par le développement logiciel, en formation BTS SIO option SLAM. À la recherche d'un stage pour mettre en pratique mes compétences.</p>
-  <div class="hero-cta fade-up-4">
-    <a href="#realisations" class="btn btn-primary">Voir mes réalisations</a>
-    <a href="cv.pdf" class="btn btn-outline" download>Télécharger le CV</a>
+  <div class="hero-bg"></div>
+  <div class="hero-content">
+    <div class="hero-eyebrow">BTS SIO · SLAM · Amiens</div>
+    <h1>Cédric<br><em>Clérentin–</em><br>Vieille</h1>
+    <p class="hero-sub">Étudiant en développement d'applications, passionné par la création de logiciels et d'outils web. En recherche de stage pour juin 2026.</p>
+    <div class="hero-cta">
+      <a href="#realisations" class="btn btn-primary">Voir mes projets →</a>
+      <a href="cv.pdf" class="btn btn-ghost" download>⬇ Télécharger le CV</a>
+    </div>
   </div>
-</section>
-
-<div class="divider"></div>
-
-<!-- À PROPOS -->
-<section id="about">
-  <div class="content-section">
-    <div class="section-label">01 — À propos</div>
-    <h2>Qui suis-je ?</h2>
-    <div class="about-grid reveal">
-      <div class="about-card">
-        <h3>// Parcours</h3>
-        <p>Bachelier général depuis 2025, j'ai choisi de poursuivre dans l'informatique par intérêt pour la logique, la résolution de problèmes et la création d'outils utiles. Le BTS SIO SLAM représente pour moi le tremplin idéal vers le développement applicatif.</p>
-      </div>
-      <div class="about-card">
-        <h3>// Motivations</h3>
-        <p>Ce qui m'attire dans le développement, c'est la possibilité de construire des solutions concrètes. J'aime comprendre comment les choses fonctionnent sous le capot, de la conception à la mise en production.</p>
-      </div>
-      <div class="about-full">
-        <h3 style="font-family:'DM Mono',monospace;font-size:0.8rem;color:var(--accent2);letter-spacing:0.1em;margin-bottom:0.75rem;">// Objectifs</h3>
-        <p>À court terme, valider mon BTS SIO option SLAM en acquérant des compétences solides en développement d'applications (web et bureau). À moyen terme, intégrer une entreprise en tant que développeur — idéalement via une alternance ou un premier emploi dans le secteur du numérique. Mon objectif final est d'évoluer vers des postes à plus forte responsabilité technique (lead dev, architecte logiciel).</p>
+  <div class="hero-visual">
+    <div class="code-card">
+      <div class="code-dots"><span></span><span></span><span></span></div>
+      <span class="code-line c-comment">// développeur.js</span>
+      <span class="code-line"><span class="c-keyword">const</span> <span class="c-var">cedric</span> <span class="c-op">=</span> {</span>
+      <span class="code-line">&nbsp;&nbsp;<span class="c-func">langages</span>: [<span class="c-string">'Python'</span>, <span class="c-string">'PHP'</span>, <span class="c-string">'C#'</span>, <span class="c-string">'JS'</span>],</span>
+      <span class="code-line">&nbsp;&nbsp;<span class="c-func">bdd</span>: [<span class="c-string">'MySQL'</span>, <span class="c-string">'MongoDB'</span>],</span>
+      <span class="code-line">&nbsp;&nbsp;<span class="c-func">option</span>: <span class="c-string">'SLAM'</span>,</span>
+      <span class="code-line">&nbsp;&nbsp;<span class="c-func">disponible</span>: <span class="c-string">'juin 2026'</span>,</span>
+      <span class="code-line">};</span>
+      <span class="code-line">&nbsp;</span>
+      <span class="code-line c-comment">// prêt à construire quelque chose ?</span>
+      <span class="code-line"><span class="c-func">cedric</span>.<span class="c-func">contact</span>()<span class="type-cursor"></span></span>
+      <div class="hero-stats">
+        <div class="stat-card"><span class="stat-num">6+</span><span class="stat-label">langages</span></div>
+        <div class="stat-card"><span class="stat-num">3</span><span class="stat-label">BDD</span></div>
+        <div class="stat-card"><span class="stat-num">2026</span><span class="stat-label">stage</span></div>
       </div>
     </div>
   </div>
 </section>
-
-<div class="divider"></div>
-
-<!-- PARCOURS -->
-<section id="parcours">
-  <div class="content-section">
-    <div class="section-label">02 — Parcours</div>
-    <h2>Mon historique</h2>
-    <div class="timeline reveal">
-      <div class="timeline-item">
-        <div class="timeline-date">2022 – 2025</div>
-        <div class="timeline-title">Baccalauréat général</div>
-        <div class="timeline-desc">Obtention du Baccalauréat général en 2025. Formation généraliste ayant développé des capacités d'analyse, de rigueur et de travail autonome.</div>
-      </div>
-      <div class="timeline-item">
-        <div class="timeline-date">Septembre 2025 – aujourd'hui</div>
-        <div class="timeline-title">BTS SIO — Option SLAM</div>
-        <div class="timeline-desc">Entrée en BTS Services Informatiques aux Organisations, spécialité Solutions Logicielles et Applications Métiers. Formation en deux ans avec stage obligatoire en fin de 1ère année.</div>
-      </div>
-      <div class="timeline-item">
-        <div class="timeline-date">2026 (à venir)</div>
-        <div class="timeline-title">Stage de fin de 1ère année</div>
-        <div class="timeline-desc">Recherche active d'un stage en développement d'applications pour mettre en pratique les compétences acquises durant l'année.</div>
-      </div>
-    </div>
+<div class="section-sep"></div>
+<section id="about"><div class="section">
+  <div class="tag">01 — À PROPOS</div>
+  <h2>Qui suis-je ?</h2>
+  <p class="section-lead">Bachelier général depuis 2025, j'ai choisi l'informatique pour ma passion de la logique et de la création.</p>
+  <div class="about-layout">
+    <div class="about-card reveal"><span class="card-icon">🎯</span><h3>Motivations</h3><p>Ce qui m'attire dans le développement, c'est la possibilité de construire des solutions concrètes. J'aime comprendre comment les choses fonctionnent, de la conception à la mise en production.</p></div>
+    <div class="about-card reveal reveal-d1"><span class="card-icon">🏔️</span><h3>Au-delà du code</h3><p>Compétiteur en escalade, j'applique la même rigueur et persévérance dans mes projets techniques. Les défis sont des opportunités d'apprentissage.</p></div>
+    <div class="about-card wide reveal reveal-d2"><span class="card-icon">🚀</span><h3>Objectifs</h3><p>À court terme, valider mon BTS SIO SLAM en acquérant des compétences solides en développement web et bureau. À moyen terme, intégrer une entreprise comme développeur. Mon objectif final est d'évoluer vers des postes à forte responsabilité technique — lead developer ou architecte logiciel.</p></div>
   </div>
-</section>
-
-<div class="divider"></div>
-
-<!-- FORMATION BTS -->
-<section id="formation">
-  <div class="content-section">
-    <div class="section-label">03 — Formation</div>
-    <h2>BTS SIO · Option SLAM</h2>
-    <div class="bts-grid reveal">
-      <div class="bts-card">
-        <h4>// Qu'est-ce que le BTS SIO ?</h4>
-        <p>Le BTS Services Informatiques aux Organisations forme des techniciens supérieurs capables de répondre aux besoins informatiques des entreprises. Il se décline en deux options : SLAM (développement) et SISR (réseaux).</p>
-      </div>
-      <div class="bts-card">
-        <h4>// Option SLAM</h4>
-        <p>L'option SLAM (Solutions Logicielles et Applications Métiers) forme au développement d'applications, à la conception de bases de données et à l'intégration de solutions web et bureau dans des contextes professionnels réels.</p>
-      </div>
-      <div class="bts-card">
-        <h4>// Blocs de compétences</h4>
-        <p>La formation couvre : la gestion du patrimoine informatique, la réponse aux incidents, le développement d'applications, la conception et adaptation de solutions, et le développement professionnel (B1 à B5).</p>
-      </div>
-      <div class="bts-card">
-        <h4>// Débouchés</h4>
-        <p>Développeur web ou logiciel, intégrateur, technicien support, ou poursuite d'études en Bachelor ou Licence professionnelle informatique.</p>
-      </div>
-    </div>
+</div></section>
+<div class="section-sep"></div>
+<section id="parcours"><div class="section">
+  <div class="tag">02 — PARCOURS</div>
+  <h2>Mon histoire</h2>
+  <p class="section-lead">De la scolarité générale à la spécialisation en informatique.</p>
+  <div class="timeline">
+    <div class="tl-item reveal"><div class="tl-dot"></div><div class="tl-date">2022 – 2025</div><div class="tl-title">Baccalauréat général — Lycée Saint-Riquier, Amiens</div><div class="tl-desc">Formation généraliste développant rigueur, esprit d'analyse et autonomie. Obtenu en 2025.</div></div>
+    <div class="tl-item reveal reveal-d1"><div class="tl-dot"></div><div class="tl-date">Septembre 2025 – aujourd'hui</div><div class="tl-title">BTS SIO — Option SLAM (en cours)</div><div class="tl-desc">Services Informatiques aux Organisations, spécialité SLAM. Développement applicatif, bases de données, conception logicielle.</div></div>
+    <div class="tl-item reveal reveal-d2"><div class="tl-dot"></div><div class="tl-date">Juin 2026 — à venir</div><div class="tl-title">Stage développeur d'applications</div><div class="tl-desc">Recherche active d'un stage en développement logiciel ou web pour mettre en pratique les compétences acquises en formation.</div></div>
   </div>
-</section>
-
-<div class="divider"></div>
-
-<!-- MÉTIERS -->
-<section id="metiers">
-  <div class="content-section">
-    <div class="section-label">04 — Métiers visés</div>
-    <h2>Où je veux aller</h2>
-    <div class="metiers-grid reveal">
-      <div class="metier-card">
-        <span class="metier-icon">💻</span>
-        <h3>Développeur web full-stack</h3>
-        <p>Conception et développement d'applications web côté front-end (HTML/CSS/JS) et back-end (PHP, Python, bases de données).</p>
-        <span class="metier-tag">Métier cible principal</span>
-      </div>
-      <div class="metier-card">
-        <span class="metier-icon">🖥️</span>
-        <h3>Développeur d'applications</h3>
-        <p>Développement de logiciels métiers en C#, Java ou Python. Conception orientée objet, architecture MVC, intégration de bases de données.</p>
-        <span class="metier-tag">Métier cible</span>
-      </div>
-      <div class="metier-card">
-        <span class="metier-icon">🔍</span>
-        <h3>Analyste-programmeur</h3>
-        <p>Analyse des besoins clients, conception de solutions (Merise, UML), développement et tests. Rôle à la jonction technique et fonctionnelle.</p>
-        <span class="metier-tag">Évolution envisagée</span>
-      </div>
-    </div>
-    <div style="margin-top:1.5rem;padding:1rem 1.25rem;background:var(--card);border:1px solid var(--border);border-radius:12px;">
-      <p style="color:var(--muted);font-size:0.9rem;">
-        🗺️ <span style="color:var(--accent2)">Carte heuristique :</span>
-        <a href="carte-heuristique.html" style="color:var(--accent3);text-decoration:none;margin-left:0.5rem;">Voir la carte heuristique — Développeur web full-stack →</a>
-      </p>
-    </div>
+  <br><br>
+  <div class="tag">03 — FORMATION BTS SIO</div>
+  <h2>Le BTS SIO SLAM</h2>
+  <p class="section-lead">Formation en deux ans orientée développement d'applications.</p>
+  <div class="bts-grid">
+    <div class="bts-card reveal"><h4>Qu'est-ce que le BTS SIO ?</h4><p>Formation de technicien supérieur pour répondre aux besoins informatiques des entreprises. Option SLAM = développement d'applications.</p></div>
+    <div class="bts-card reveal reveal-d1"><h4>Option SLAM</h4><p>Solutions Logicielles et Applications Métiers : développement d'applications, conception de bases de données, intégration web et bureau.</p></div>
+    <div class="bts-card reveal reveal-d2"><h4>Blocs de compétences</h4><p>Gestion du patrimoine informatique, gestion des incidents, développement, conception et adaptation de solutions (B1 à B5).</p></div>
+    <div class="bts-card reveal reveal-d3"><h4>Débouchés</h4><p>Développeur web/logiciel, intégrateur, ou poursuite en Bachelor/Licence professionnelle informatique.</p></div>
   </div>
-</section>
-
-<div class="divider"></div>
-
-<!-- COMPÉTENCES -->
-<section id="competences">
-  <div class="content-section">
-    <div class="section-label">05 — Compétences</div>
-    <h2>Ce que j'apprends</h2>
-    <p style="color:var(--muted);margin-bottom:2rem;font-size:0.95rem;">Compétences en cours d'acquisition en 1ère année de BTS SIO option SLAM :</p>
-
-    <div style="margin-bottom:2rem;" class="reveal">
-      <p style="font-family:'DM Mono',monospace;font-size:0.75rem;color:var(--accent);letter-spacing:0.15em;margin-bottom:1rem;">LANGAGES & FRAMEWORKS</p>
-      <div class="skills-grid">
-        <div class="skill-pill"><span class="skill-name">C#</span><span class="skill-cat">Visual Studio</span></div>
-        <div class="skill-pill"><span class="skill-name">PHP</span><span class="skill-cat">NetBeans</span></div>
-        <div class="skill-pill"><span class="skill-name">HTML / CSS</span><span class="skill-cat">Web</span></div>
-        <div class="skill-pill"><span class="skill-name">JavaScript</span><span class="skill-cat">Front-end</span></div>
-        <div class="skill-pill"><span class="skill-name">Java</span><span class="skill-cat">Eclipse</span></div>
-        <div class="skill-pill"><span class="skill-name">Python</span><span class="skill-cat">PyCharm</span></div>
-      </div>
-    </div>
-
-    <div style="margin-bottom:2rem;" class="reveal">
-      <p style="font-family:'DM Mono',monospace;font-size:0.75rem;color:var(--accent);letter-spacing:0.15em;margin-bottom:1rem;">BASES DE DONNÉES & CMS</p>
-      <div class="skills-grid">
-        <div class="skill-pill"><span class="skill-name">MySQL</span><span class="skill-cat">SGBD</span></div>
-        <div class="skill-pill"><span class="skill-name">PostgreSQL</span><span class="skill-cat">SGBD</span></div>
-        <div class="skill-pill"><span class="skill-name">MongoDB</span><span class="skill-cat">NoSQL</span></div>
-        <div class="skill-pill"><span class="skill-name">WordPress</span><span class="skill-cat">CMS</span></div>
-      </div>
-    </div>
-
-    <div class="reveal">
-      <p style="font-family:'DM Mono',monospace;font-size:0.75rem;color:var(--accent);letter-spacing:0.15em;margin-bottom:1rem;">MÉTHODES & OUTILS</p>
-      <div class="skills-grid">
-        <div class="skill-pill"><span class="skill-name">GitHub</span><span class="skill-cat">Collaboratif</span></div>
-        <div class="skill-pill"><span class="skill-name">Merise / UML</span><span class="skill-cat">Conception</span></div>
-        <div class="skill-pill"><span class="skill-name">MVC</span><span class="skill-cat">Architecture</span></div>
-        <div class="skill-pill"><span class="skill-name">SOLID / DRY</span><span class="skill-cat">Qualité</span></div>
-        <div class="skill-pill"><span class="skill-name">Tests unitaires</span><span class="skill-cat">Qualité</span></div>
-        <div class="skill-pill"><span class="skill-name">SonarLint</span><span class="skill-cat">Analyse</span></div>
-      </div>
-    </div>
+</div></section>
+<div class="section-sep"></div>
+<section id="metiers"><div class="section">
+  <div class="tag">04 — MÉTIERS VISÉS</div>
+  <h2>Où je veux aller</h2>
+  <p class="section-lead">Les métiers que je cible après ma formation.</p>
+  <div class="metiers-grid">
+    <a href="carte-heuristique.html" class="metier-card reveal"><div class="icon">💻</div><h3>Développeur web full-stack</h3><p>Conception et développement d'applications web, front-end et back-end. PHP, HTML/CSS, JavaScript, bases de données.</p><span class="metier-badge">🗺️ Carte heuristique</span></a>
+    <div class="metier-card reveal reveal-d1"><div class="icon">🖥️</div><h3>Développeur d'applications</h3><p>Développement de logiciels métiers en C#, Java ou Python. Architecture MVC, intégration BDD, déploiement.</p><span class="metier-badge">Métier cible</span></div>
+    <div class="metier-card reveal reveal-d2"><div class="icon">🔍</div><h3>Analyste-programmeur</h3><p>Analyse des besoins, conception de solutions (Merise, UML), développement et tests.</p><span class="metier-badge">Évolution envisagée</span></div>
   </div>
-</section>
-
-<div class="divider"></div>
-
-<!-- RÉALISATIONS -->
-<section id="realisations">
-  <div class="content-section">
-    <div class="section-label">06 — Réalisations</div>
-    <h2>Mes projets</h2>
-    <div class="reals-grid reveal">
-      <div class="real-card">
-        <div class="real-badge">01 · Stage</div>
-        <h3>Stage de 1ère année</h3>
-        <p>Stage en entreprise prévu en fin de première année. Mise en pratique des compétences de développement acquises en formation.</p>
-        <span class="real-soon">À venir — juin 2026</span>
-      </div>
-      <div class="real-card">
-        <div class="real-badge">02 · Atelier</div>
-        <h3>Atelier 2</h3>
-        <p>Projet de développement réalisé dans le cadre de la formation BTS SIO SLAM. Conception et développement d'une application métier.</p>
-        <span class="real-soon">En cours de réalisation</span>
-      </div>
-      <div class="real-card">
-        <div class="real-badge">03 · Portfolio</div>
-        <h3>Portfolio en ligne</h3>
-        <p>Conception et développement de ce portfolio en HTML/CSS/JS, hébergé sur GitHub Pages. Première réalisation concrète dans le cadre du BTS.</p>
-        <span class="real-soon">Terminé · 2025</span>
-      </div>
-    </div>
+</div></section>
+<div class="section-sep"></div>
+<section id="competences"><div class="section">
+  <div class="tag">05 — COMPÉTENCES</div>
+  <h2>Ce que j'apprends</h2>
+  <p class="section-lead">Compétences en cours d'acquisition en 1ère année de BTS SIO option SLAM.</p>
+  <div class="skills-section">
+    <div class="reveal"><div class="skill-group-title">🔵 Langages &amp; frameworks</div><div class="skills-wrap"><div class="skill-tag"><span class="dot dot-lang"></span>C# · Visual Studio</div><div class="skill-tag"><span class="dot dot-lang"></span>PHP · NetBeans</div><div class="skill-tag"><span class="dot dot-lang"></span>HTML / CSS</div><div class="skill-tag"><span class="dot dot-lang"></span>JavaScript</div><div class="skill-tag"><span class="dot dot-lang"></span>Java · Eclipse</div><div class="skill-tag"><span class="dot dot-lang"></span>Python · PyCharm</div></div></div>
+    <div class="reveal reveal-d1"><div class="skill-group-title">🟢 Bases de données &amp; CMS</div><div class="skills-wrap"><div class="skill-tag"><span class="dot dot-db"></span>MySQL</div><div class="skill-tag"><span class="dot dot-db"></span>PostgreSQL</div><div class="skill-tag"><span class="dot dot-db"></span>MongoDB</div><div class="skill-tag"><span class="dot dot-db"></span>WordPress</div></div></div>
+    <div class="reveal reveal-d2"><div class="skill-group-title">🟡 Méthodes &amp; outils</div><div class="skills-wrap"><div class="skill-tag"><span class="dot dot-tool"></span>GitHub</div><div class="skill-tag"><span class="dot dot-tool"></span>Merise / UML</div><div class="skill-tag"><span class="dot dot-tool"></span>Architecture MVC</div><div class="skill-tag"><span class="dot dot-tool"></span>SOLID · DRY · KISS</div><div class="skill-tag"><span class="dot dot-tool"></span>Tests unitaires</div><div class="skill-tag"><span class="dot dot-tool"></span>SonarLint</div></div></div>
   </div>
-</section>
-
-<div class="divider"></div>
-
-<!-- VEILLE -->
-<section id="veille">
-  <div class="content-section">
-    <div class="section-label">07 — Veille informationnelle</div>
-    <h2>Ma veille techno</h2>
-
-    <div class="veille-intro reveal">
-      <h3>// Dispositifs de veille mis en place</h3>
-      <p>Pour rester à jour dans un domaine en évolution constante, j'ai mis en place plusieurs outils de surveillance automatisée. Ces dispositifs me permettent de suivre l'actualité tech, les nouvelles pratiques de développement et les évolutions du marché de l'emploi informatique sans y consacrer trop de temps.</p>
-      <div class="tools-row">
-        <span class="tool-tag">Feedly (agrégateur RSS)</span>
-        <span class="tool-tag">Google Alertes</span>
-        <span class="tool-tag">Reddit r/programming</span>
-        <span class="tool-tag">Dev.to</span>
-        <span class="tool-tag">GitHub Trending</span>
-        <span class="tool-tag">Newsletter TLDR</span>
-      </div>
-    </div>
-
-    <div class="veille-themes reveal">
-      <div class="theme-card">
-        <h3>🤖 Intelligence artificielle & développement</h3>
-        <p>L'IA transforme profondément les pratiques de développement logiciel : assistants de code (GitHub Copilot, Claude), génération automatique de tests, revue de code intelligente. En tant que futur développeur, comprendre ces outils et savoir les utiliser est devenu indispensable. Je surveille les évolutions des LLM appliqués au code, les nouvelles pratiques "AI-assisted development" et les débats éthiques associés.</p>
-      </div>
-      <div class="theme-card">
-        <h3>🔐 Cybersécurité des applications web</h3>
-        <p>La sécurité est une responsabilité du développeur dès la conception. Les failles OWASP Top 10 (injections SQL, XSS, CSRF…) sont des menaces concrètes que tout développeur web doit maîtriser. Je surveille les nouvelles vulnérabilités découvertes, les bonnes pratiques "secure by design", et les actualités des grandes failles qui font régulièrement la une. Ce thème est directement lié à ma future pratique professionnelle.</p>
-      </div>
-    </div>
+</div></section>
+<div class="section-sep"></div>
+<section id="realisations"><div class="section">
+  <div class="tag">06 — RÉALISATIONS</div>
+  <h2>Mes projets</h2>
+  <p class="section-lead">Projets réalisés dans le cadre de la formation et en dehors.</p>
+  <div class="reals-grid">
+    <div class="real-card reveal"><div class="real-num">01 · STAGE</div><h3>Stage de 1ère année</h3><p>Stage en entreprise prévu en fin de 1ère année. Mise en pratique des compétences de développement acquises en formation.</p><span class="real-status status-soon">⏳ Juin 2026</span></div>
+    <div class="real-card reveal reveal-d1"><div class="real-num">02 · ATELIER</div><h3>Atelier 2</h3><p>Projet de développement dans le cadre du BTS SIO SLAM. Conception et développement d'une application métier.</p><span class="real-status status-wip">⚡ En cours</span></div>
+    <div class="real-card reveal reveal-d2"><div class="real-num">03 · PERSO</div><h3>Bot Discord</h3><p>Bot Discord automatisé développé en Python : gestion de commandes, interactions utilisateur, déploiement autonome.</p><span class="real-status status-done">✓ Terminé</span></div>
+    <div class="real-card reveal"><div class="real-num">04 · PERSO</div><h3>Dictionnaire en ligne</h3><p>Site web de dictionnaire en HTML/CSS/JS : interface de recherche, affichage dynamique des définitions, responsive.</p><span class="real-status status-done">✓ Terminé</span></div>
+    <div class="real-card reveal reveal-d1"><div class="real-num">05 · PORTFOLIO</div><h3>Ce portfolio</h3><p>Conception et développement de ce site en HTML/CSS/JS pur. Hébergé sur GitHub Pages.</p><span class="real-status status-done">✓ 2025</span></div>
   </div>
-</section>
-
-<div class="divider"></div>
-
-<!-- CV -->
-<section id="cv">
-  <div class="content-section">
-    <div class="section-label">08 — CV</div>
-    <h2>Curriculum Vitae</h2>
-    <div class="cv-section reveal">
-      <p>Mon CV au format PDF, conforme aux attentes du BTS SIO, est disponible en téléchargement ci-dessous.</p>
-      <a href="cv.pdf" class="btn btn-primary" download>
-        ⬇ Télécharger mon CV (PDF)
-      </a>
-    </div>
+</div></section>
+<div class="section-sep"></div>
+<section id="veille"><div class="section">
+  <div class="tag">07 — VEILLE INFORMATIONNELLE</div>
+  <h2>Ma veille techno</h2>
+  <p class="section-lead">Dispositifs mis en place pour rester à jour dans un domaine en constante évolution.</p>
+  <div class="veille-devices reveal"><h3>Outils de surveillance mis en place</h3><p>J'ai organisé une veille multi-sources automatisée pour suivre l'actualité tech, les nouvelles pratiques de développement et les évolutions du marché.</p><div class="tools-row"><span class="tool-chip">Feedly (RSS)</span><span class="tool-chip">Google Alertes</span><span class="tool-chip">Reddit r/programming</span><span class="tool-chip">Dev.to</span><span class="tool-chip">GitHub Trending</span><span class="tool-chip">Newsletter TLDR</span></div></div>
+  <div class="themes-grid">
+    <div class="theme-card reveal"><h3>🤖 IA &amp; développement</h3><p>L'IA transforme les pratiques de développement : assistants de code (GitHub Copilot, Claude), génération de tests, revue intelligente. Je surveille les LLM appliqués au code, les pratiques "AI-assisted development" et les débats éthiques associés.</p></div>
+    <div class="theme-card reveal reveal-d1"><h3>🔐 Cybersécurité des applis web</h3><p>La sécurité est une responsabilité du développeur dès la conception. Je surveille les failles OWASP Top 10, les nouvelles vulnérabilités, les bonnes pratiques "secure by design" — directement lié à ma future pratique.</p></div>
   </div>
-</section>
-
-<div class="divider"></div>
-
-<!-- CONTACT -->
-<section id="contact">
-  <div class="content-section">
-    <div class="section-label">09 — Contact</div>
-    <h2>Me contacter</h2>
-    <div class="contact-grid reveal">
-      <div class="contact-info">
-        <h3>Travaillons ensemble.</h3>
-        <p>Vous êtes une entreprise à la recherche d'un stagiaire développeur, ou vous avez une question ? N'hésitez pas à me contacter via ce formulaire.</p>
-        <p style="font-family:'DM Mono',monospace;font-size:0.8rem;color:var(--accent2);">
-          Disponible pour un stage à partir de juin 2026.
-        </p>
-      </div>
-      <form id="contactForm">
-        <div class="form-group">
-          <label>NOM / PRÉNOM</label>
-          <input type="text" name="name" placeholder="Jean Dupont" required>
-        </div>
-        <div class="form-group">
-          <label>EMAIL</label>
-          <input type="email" name="email" placeholder="jean.dupont@exemple.com" required>
-        </div>
-        <div class="form-group">
-          <label>OBJET</label>
-          <input type="text" name="subject" placeholder="Proposition de stage…">
-        </div>
-        <div class="form-group">
-          <label>MESSAGE</label>
-          <textarea name="message" placeholder="Bonjour Cédric, …" required></textarea>
-        </div>
-        <button type="submit" class="btn btn-primary">Envoyer le message →</button>
-        <div class="form-success" id="formSuccess">✓ Message envoyé ! Je vous répondrai dans les plus brefs délais.</div>
-      </form>
-    </div>
+</div></section>
+<div class="section-sep"></div>
+<section id="cv"><div class="section">
+  <div class="tag">08 — CURRICULUM VITAE</div>
+  <h2>Mon CV</h2>
+  <div class="cv-box reveal"><h3>Cédric Clérentin–Vieille</h3><p>CV complet au format PDF — développeur d'applications, BTS SIO SLAM, disponible pour un stage à partir de juin 2026.</p><a href="cv.pdf" class="btn btn-primary" download>⬇ Télécharger le CV (PDF)</a></div>
+</div></section>
+<div class="section-sep"></div>
+<section id="contact"><div class="section">
+  <div class="tag">09 — CONTACT</div>
+  <h2>Me contacter</h2>
+  <div class="contact-layout">
+    <div class="contact-info reveal"><h3>Travaillons<br>ensemble.</h3><p>Entreprise à la recherche d'un stagiaire développeur, ou simplement une question ? Je suis disponible par mail ou via ce formulaire.</p><span class="contact-badge">Disponible pour un stage · Juin 2026</span></div>
+    <form id="contactForm" class="reveal reveal-d1">
+      <div class="form-row"><div class="fgroup"><label>NOM / PRÉNOM</label><input type="text" placeholder="Jean Dupont" required></div><div class="fgroup"><label>EMAIL</label><input type="email" placeholder="jean@exemple.com" required></div></div>
+      <div class="fgroup"><label>OBJET</label><input type="text" placeholder="Proposition de stage…"></div>
+      <div class="fgroup"><label>MESSAGE</label><textarea placeholder="Bonjour Cédric, …" required></textarea></div>
+      <button type="submit" class="btn btn-primary">Envoyer →</button>
+      <div class="form-success" id="formOk">✓ Message envoyé ! Je vous réponds rapidement.</div>
+    </form>
   </div>
-</section>
-
-<footer>
-  <p>© 2025–2026 Cédric Clérentin–Vieille · BTS SIO SLAM · Construit avec HTML/CSS/JS · Hébergé sur GitHub Pages</p>
-</footer>
-
+</div></section>
+<footer>© 2025–2026 Cédric Clérentin–Vieille · BTS SIO SLAM · Hébergé sur GitHub Pages</footer>
 <script>
-  // Scroll reveal
-  const reveals = document.querySelectorAll('.reveal');
-  const observer = new IntersectionObserver((entries) => {
-    entries.forEach(e => { if (e.isIntersecting) { e.target.classList.add('visible'); } });
-  }, { threshold: 0.1 });
-  reveals.forEach(r => observer.observe(r));
-
-  // Contact form
-  document.getElementById('contactForm').addEventListener('submit', function(e) {
-    e.preventDefault();
-    document.getElementById('formSuccess').style.display = 'block';
-    this.reset();
-    setTimeout(() => { document.getElementById('formSuccess').style.display = 'none'; }, 5000);
-  });
+const glow=document.getElementById('glow');
+document.addEventListener('mousemove',e=>{glow.style.transform=`translate(${e.clientX}px,${e.clientY}px) translate(-50%,-50%)`;});
+const obs=new IntersectionObserver(entries=>{entries.forEach(e=>{if(e.isIntersecting)e.target.classList.add('v');});},{threshold:0.1});
+document.querySelectorAll('.reveal').forEach(el=>obs.observe(el));
+const sections=document.querySelectorAll('section[id]');
+const links=document.querySelectorAll('.nav-links a');
+window.addEventListener('scroll',()=>{let cur='';sections.forEach(s=>{if(window.scrollY>=s.offsetTop-120)cur=s.id;});links.forEach(a=>{a.style.color=a.getAttribute('href')==='#'+cur?'var(--accent)':'';});},{passive:true});
+document.getElementById('contactForm').addEventListener('submit',function(e){e.preventDefault();document.getElementById('formOk').style.display='block';this.reset();setTimeout(()=>document.getElementById('formOk').style.display='none',5000);});
+window.addEventListener('scroll',()=>{document.querySelector('nav').style.boxShadow=window.scrollY>10?'0 2px 20px rgba(13,13,20,.08)':'';},{passive:true});
 </script>
 </body>
 </html>
-
