@@ -1,0 +1,542 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Carte Heuristique — Développeur Web Full-Stack | Cédric Clérentin–Vieille</title>
+<link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;700;800&family=JetBrains+Mono:wght@400;500&family=Instrument+Sans:wght@400;500&display=swap" rel="stylesheet">
+<style>
+:root {
+  --bg: #06060d;
+  --node-center: #3b5bdb;
+  --n1: #e64980; --n1l: #fce7f3;
+  --n2: #2f9e44; --n2l: #d3f9d8;
+  --n3: #e67700; --n3l: #fff3bf;
+  --n4: #7c3aed; --n4l: #ede9fe;
+  --n5: #0ea5e9; --n5l: #e0f2fe;
+  --n6: #db2777; --n6l: #fce7f3;
+  --text: #f0f0f8;
+  --muted: #8888aa;
+  --serif: 'Syne', sans-serif;
+  --mono: 'JetBrains Mono', monospace;
+  --body: 'Instrument Sans', sans-serif;
+}
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+html, body { width: 100%; height: 100%; overflow: hidden; }
+body {
+  background: var(--bg);
+  font-family: var(--body);
+  color: var(--text);
+  position: relative;
+}
+
+/* Stars background */
+.stars {
+  position: fixed; inset: 0; z-index: 0;
+  overflow: hidden; pointer-events: none;
+}
+.star {
+  position: absolute; border-radius: 50%;
+  background: white; animation: twinkle var(--d) infinite ease-in-out;
+}
+@keyframes twinkle {
+  0%, 100% { opacity: var(--min); transform: scale(1); }
+  50% { opacity: var(--max); transform: scale(1.3); }
+}
+
+/* Grid */
+body::before {
+  content: '';
+  position: fixed; inset: 0; z-index: 0;
+  background-image:
+    linear-gradient(rgba(59,91,219,0.04) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(59,91,219,0.04) 1px, transparent 1px);
+  background-size: 50px 50px;
+  pointer-events: none;
+}
+
+/* Nav */
+nav {
+  position: fixed; top: 0; left: 0; right: 0; z-index: 200;
+  height: 56px; padding: 0 2rem;
+  display: flex; align-items: center; justify-content: space-between;
+  background: rgba(6,6,13,0.85); backdrop-filter: blur(12px);
+  border-bottom: 1px solid rgba(59,91,219,0.15);
+}
+.nav-back {
+  display: flex; align-items: center; gap: .6rem;
+  color: var(--muted); text-decoration: none;
+  font-family: var(--mono); font-size: .78rem;
+  transition: color .2s;
+}
+.nav-back:hover { color: var(--node-center); }
+.nav-title {
+  font-family: var(--serif); font-size: .9rem; font-weight: 700;
+  color: var(--text); letter-spacing: -.02em;
+}
+.nav-tag {
+  font-family: var(--mono); font-size: .7rem;
+  color: var(--node-center); background: rgba(59,91,219,.15);
+  padding: .25rem .7rem; border-radius: 100px;
+}
+
+/* Canvas wrapper */
+#canvas-wrap {
+  position: fixed; inset: 56px 0 0 0; z-index: 1;
+  overflow: hidden; cursor: grab;
+}
+#canvas-wrap:active { cursor: grabbing; }
+#mindmap-svg {
+  width: 100%; height: 100%;
+  display: block;
+}
+
+/* Tooltip */
+#tooltip {
+  position: fixed; z-index: 300;
+  background: rgba(15,15,25,0.97);
+  border: 1px solid rgba(59,91,219,.35);
+  border-radius: 14px;
+  padding: 1rem 1.25rem;
+  max-width: 260px;
+  pointer-events: none;
+  opacity: 0; transition: opacity .2s;
+  box-shadow: 0 10px 40px rgba(0,0,0,.5);
+}
+#tooltip.visible { opacity: 1; }
+#tooltip h4 {
+  font-family: var(--serif); font-size: .95rem; font-weight: 700;
+  margin-bottom: .4rem;
+}
+#tooltip p {
+  font-family: var(--body); font-size: .82rem;
+  color: var(--muted); line-height: 1.55;
+}
+#tooltip .t-tag {
+  display: inline-block; margin-top: .6rem;
+  font-family: var(--mono); font-size: .68rem;
+  padding: .2rem .6rem; border-radius: 100px;
+}
+
+/* Legend */
+#legend {
+  position: fixed; bottom: 1.5rem; left: 1.5rem; z-index: 200;
+  background: rgba(15,15,25,.9);
+  border: 1px solid rgba(255,255,255,.07);
+  border-radius: 14px; padding: 1rem 1.25rem;
+  display: flex; flex-direction: column; gap: .5rem;
+  backdrop-filter: blur(8px);
+}
+.leg-title {
+  font-family: var(--mono); font-size: .68rem;
+  color: var(--muted); letter-spacing: .1em; margin-bottom: .25rem;
+}
+.leg-item {
+  display: flex; align-items: center; gap: .6rem;
+  font-size: .8rem; color: var(--text);
+}
+.leg-dot {
+  width: 10px; height: 10px; border-radius: 50%; flex-shrink: 0;
+}
+
+/* Hint */
+#hint {
+  position: fixed; bottom: 1.5rem; right: 1.5rem; z-index: 200;
+  background: rgba(15,15,25,.9);
+  border: 1px solid rgba(255,255,255,.07);
+  border-radius: 14px; padding: .75rem 1.1rem;
+  font-family: var(--mono); font-size: .72rem; color: var(--muted);
+  backdrop-filter: blur(8px);
+  display: flex; flex-direction: column; gap: .3rem;
+}
+
+/* Node animations */
+@keyframes nodeIn {
+  from { opacity: 0; transform: scale(0.3); }
+  to { opacity: 1; transform: scale(1); }
+}
+@keyframes pulse-ring {
+  0% { r: 42; opacity: .6; }
+  100% { r: 62; opacity: 0; }
+}
+.node-group { cursor: pointer; }
+.node-group .node-bg { transition: filter .2s; }
+.node-group:hover .node-bg { filter: brightness(1.25); }
+</style>
+</head>
+<body>
+
+<div class="stars" id="stars"></div>
+
+<nav>
+  <a href="index.html" class="nav-back">← Retour au portfolio</a>
+  <span class="nav-title">Carte heuristique</span>
+  <span class="nav-tag">Développeur web full-stack</span>
+</nav>
+
+<div id="canvas-wrap">
+  <svg id="mindmap-svg" xmlns="http://www.w3.org/2000/svg"></svg>
+</div>
+
+<div id="tooltip">
+  <h4 id="tt-title"></h4>
+  <p id="tt-desc"></p>
+  <span class="t-tag" id="tt-tag"></span>
+</div>
+
+<div id="legend">
+  <div class="leg-title">BRANCHES</div>
+  <div class="leg-item"><div class="leg-dot" style="background:#e64980"></div>Compétences techniques</div>
+  <div class="leg-item"><div class="leg-dot" style="background:#2f9e44"></div>Outils &amp; environnement</div>
+  <div class="leg-item"><div class="leg-dot" style="background:#e67700"></div>Métier &amp; missions</div>
+  <div class="leg-item"><div class="leg-dot" style="background:#7c3aed"></div>Formation &amp; évolution</div>
+  <div class="leg-item"><div class="leg-dot" style="background:#0ea5e9"></div>Soft skills</div>
+  <div class="leg-item"><div class="leg-dot" style="background:#db2777"></div>Salaire &amp; marché</div>
+</div>
+
+<div id="hint">
+  <span>🖱 Survoler un nœud pour les détails</span>
+  <span>✋ Glisser pour naviguer</span>
+  <span>🔍 Molette pour zoomer</span>
+</div>
+
+<script>
+// ── STARS ────────────────────────────────────────────
+const starsEl = document.getElementById('stars');
+for (let i = 0; i < 120; i++) {
+  const s = document.createElement('div');
+  s.className = 'star';
+  const size = Math.random() * 2 + .5;
+  s.style.cssText = `
+    width:${size}px; height:${size}px;
+    left:${Math.random()*100}%; top:${Math.random()*100}%;
+    --d:${2+Math.random()*4}s;
+    --min:${0.1+Math.random()*.2};
+    --max:${0.5+Math.random()*.5};
+    animation-delay:${Math.random()*4}s;
+  `;
+  starsEl.appendChild(s);
+}
+
+// ── DATA ─────────────────────────────────────────────
+const CENTER = { label: 'Développeur\nWeb Full-Stack', color: '#3b5bdb', r: 68 };
+
+const BRANCHES = [
+  {
+    id: 'b1', label: 'Compétences\ntechniques', color: '#e64980', angle: -90, dist: 200,
+    children: [
+      { label: 'Front-end', desc: 'HTML, CSS, JavaScript, frameworks (React, Vue). Interface utilisateur, responsive design, accessibilité.', tag: 'UI/UX' },
+      { label: 'Back-end', desc: 'PHP, Python, Node.js, Java. Logique serveur, API REST, sécurité, performances.', tag: 'Serveur' },
+      { label: 'Bases de données', desc: 'MySQL, PostgreSQL, MongoDB. Modélisation, requêtes SQL, optimisation, NoSQL.', tag: 'BDD' },
+      { label: 'Versioning', desc: 'Git et GitHub : gestion du code source, branches, pull requests, code review en équipe.', tag: 'Collaboration' },
+    ]
+  },
+  {
+    id: 'b2', label: 'Outils &\nenvironnement', color: '#2f9e44', angle: -30, dist: 200,
+    children: [
+      { label: 'IDE & éditeurs', desc: 'VS Code, WebStorm, PHPStorm, NetBeans. Environnements de développement adaptés au langage.', tag: 'Productivité' },
+      { label: 'DevOps', desc: 'Docker, CI/CD, déploiement sur serveur, hébergement (OVH, AWS, Vercel, GitHub Pages).', tag: 'Infra' },
+      { label: 'Méthodes agiles', desc: 'Scrum, Kanban, sprints, rétrospectives. Travail en équipe avec outils comme Trello, Jira.', tag: 'Méthodo' },
+      { label: 'Tests', desc: 'Tests unitaires, tests fonctionnels, TDD. Outils : Jest, PHPUnit, Selenium. Qualité logicielle.', tag: 'Qualité' },
+    ]
+  },
+  {
+    id: 'b3', label: 'Métier &\nmissions', color: '#e67700', angle: 30, dist: 200,
+    children: [
+      { label: 'Développement', desc: 'Concevoir, coder et maintenir des applications web. Écrire du code propre, documenté et maintenable.', tag: 'Cœur de métier' },
+      { label: 'Conception', desc: 'Analyse des besoins, modélisation (UML, Merise), maquettage (Figma), architecture logicielle.', tag: 'Design' },
+      { label: 'Collaboration', desc: 'Travailler avec designers, chefs de projet, DevOps. Participation aux réunions, suivi de tickets.', tag: 'Équipe' },
+      { label: 'Veille', desc: 'Se former continuellement aux nouvelles technologies, frameworks et bonnes pratiques du développement.', tag: 'Actualité' },
+    ]
+  },
+  {
+    id: 'b4', label: 'Formation &\névolution', color: '#7c3aed', angle: 90, dist: 200,
+    children: [
+      { label: 'BTS SIO SLAM', desc: 'Formation actuelle : 2 ans en développement d\'applications, bases de données, conception logicielle.', tag: 'En cours' },
+      { label: 'Bachelor / LP', desc: 'Poursuite possible en Bachelor Développeur Web ou Licence Pro Informatique après le BTS.', tag: 'Bac+3' },
+      { label: 'Master / Ingénieur', desc: 'École d\'ingénieurs, master informatique : approfondissement technique et managérial.', tag: 'Bac+5' },
+      { label: 'Lead Dev / Archi', desc: 'Évolution vers Lead Developer ou Architecte logiciel : supervision technique d\'une équipe.', tag: 'Senior' },
+    ]
+  },
+  {
+    id: 'b5', label: 'Soft Skills', color: '#0ea5e9', angle: 150, dist: 200,
+    children: [
+      { label: 'Résolution de problèmes', desc: 'Analyser un bug, décortiquer un problème complexe et trouver une solution élégante.', tag: 'Logique' },
+      { label: 'Communication', desc: 'Savoir expliquer des concepts techniques à des non-techniciens, rédiger une documentation claire.', tag: 'Expression' },
+      { label: 'Curiosité', desc: 'Veille technologique active, appétence pour apprendre de nouveaux langages et outils en continu.', tag: 'Passion' },
+      { label: 'Rigueur', desc: 'Code propre, respect des conventions (SOLID, DRY, KISS), gestion du temps et des priorités.', tag: 'Discipline' },
+    ]
+  },
+  {
+    id: 'b6', label: 'Salaire &\nmarché', color: '#db2777', angle: 210, dist: 200,
+    children: [
+      { label: 'Junior (0–2 ans)', desc: 'Entre 25 000 € et 35 000 € brut/an. Stage : 650–800 €/mois. Alternance : salaire selon âge.', tag: 'Débutant' },
+      { label: 'Confirmé (3–5 ans)', desc: 'Entre 38 000 € et 52 000 € brut/an selon stack, région et type d\'entreprise.', tag: 'Expérimenté' },
+      { label: 'Senior (5+ ans)', desc: 'Entre 55 000 € et 80 000 €+ brut/an. Freelance : 400–800 €/jour TJM.', tag: 'Expert' },
+      { label: 'Marché de l\'emploi', desc: 'Métier en forte demande. Forte présence à Paris, Lyon, Bordeaux, Toulouse, Nantes, et télétravail.', tag: 'Opportunités' },
+    ]
+  },
+];
+
+// ── SVG SETUP ────────────────────────────────────────
+const svg = document.getElementById('mindmap-svg');
+const NS = 'http://www.w3.org/2000/svg';
+
+let vx = 0, vy = 0, scale = 1;
+const W = () => svg.clientWidth;
+const H = () => svg.clientHeight;
+
+function mkEl(tag, attrs = {}) {
+  const el = document.createElementNS(NS, tag);
+  for (const [k, v] of Object.entries(attrs)) el.setAttribute(k, v);
+  return el;
+}
+
+function toRad(deg) { return deg * Math.PI / 180; }
+
+// Main group (pan/zoom target)
+const g = mkEl('g', { id: 'root' });
+svg.appendChild(g);
+
+// Defs for glow filters and gradients
+const defs = mkEl('defs');
+svg.insertBefore(defs, g);
+
+function addGlow(id, color, stdDev = 8) {
+  const f = mkEl('filter', { id, x: '-50%', y: '-50%', width: '200%', height: '200%' });
+  const fe = mkEl('feGaussianBlur', { stdDeviation: stdDev, result: 'blur' });
+  const fm = mkEl('feMerge');
+  const fn1 = mkEl('feMergeNode', { in: 'blur' });
+  const fn2 = mkEl('feMergeNode', { in: 'SourceGraphic' });
+  fm.appendChild(fn1); fm.appendChild(fn2);
+  f.appendChild(fe); f.appendChild(fm);
+  defs.appendChild(f);
+
+  // Colored drop shadow
+  const f2 = mkEl('filter', { id: id + '-shadow' });
+  const fe2 = mkEl('feDropShadow', { dx: 0, dy: 4, stdDeviation: 12, 'flood-color': color, 'flood-opacity': .5 });
+  f2.appendChild(fe2);
+  defs.appendChild(f2);
+}
+
+addGlow('glow-center', '#3b5bdb', 12);
+BRANCHES.forEach(b => addGlow('glow-' + b.id, b.color, 8));
+
+// Draw connections first (behind nodes)
+const connGroup = mkEl('g', { id: 'connections' });
+g.appendChild(connGroup);
+const nodeGroup = mkEl('g', { id: 'nodes' });
+g.appendChild(nodeGroup);
+
+function drawMap() {
+  const cx = W() / 2;
+  const cy = H() / 2;
+
+  // Center node
+  const centerGroup = mkEl('g', { class: 'node-group', 'data-title': 'Développeur Web Full-Stack', 'data-desc': 'Métier consistant à concevoir et développer des applications web, de l\'interface utilisateur (front-end) à la logique serveur (back-end), en passant par les bases de données.', 'data-tag': 'Métier cible principal', 'data-color': '#3b5bdb' });
+
+  // Pulse ring animation
+  const pulseRing = mkEl('circle', { cx, cy, r: 72, fill: 'none', stroke: '#3b5bdb', 'stroke-width': 2, opacity: 0 });
+  const animate1 = mkEl('animate', { attributeName: 'r', values: '72;100', dur: '2.5s', repeatCount: 'indefinite' });
+  const animate2 = mkEl('animate', { attributeName: 'opacity', values: '0.5;0', dur: '2.5s', repeatCount: 'indefinite' });
+  pulseRing.appendChild(animate1); pulseRing.appendChild(animate2);
+  centerGroup.appendChild(pulseRing);
+
+  const centerBg = mkEl('circle', { cx, cy, r: CENTER.r, fill: CENTER.color, class: 'node-bg', filter: 'url(#glow-center)' });
+  centerGroup.appendChild(centerBg);
+
+  const centerLines = CENTER.label.split('\n');
+  centerLines.forEach((line, i) => {
+    const t = mkEl('text', {
+      x: cx, y: cy + (i - (centerLines.length - 1) / 2) * 20,
+      'text-anchor': 'middle', 'dominant-baseline': 'middle',
+      fill: 'white', 'font-family': 'Syne, sans-serif',
+      'font-size': i === 0 ? 15 : 13,
+      'font-weight': 800,
+    });
+    t.textContent = line;
+    centerGroup.appendChild(t);
+  });
+  nodeGroup.appendChild(centerGroup);
+
+  // Branches
+  BRANCHES.forEach((branch, bi) => {
+    const angle = toRad(branch.angle);
+    const bx = cx + Math.cos(angle) * branch.dist;
+    const by = cy + Math.sin(angle) * branch.dist;
+
+    // Curved connector center → branch
+    const cp1x = cx + Math.cos(angle) * branch.dist * 0.35;
+    const cp1y = cy + Math.sin(angle) * branch.dist * 0.35;
+    const conn = mkEl('path', {
+      d: `M ${cx} ${cy} Q ${cp1x} ${cp1y} ${bx} ${by}`,
+      fill: 'none', stroke: branch.color,
+      'stroke-width': 3, opacity: .6,
+      'stroke-dasharray': '6 4',
+    });
+    const anim = mkEl('animate', {
+      attributeName: 'stroke-dashoffset',
+      values: '0;-20', dur: '1.5s',
+      repeatCount: 'indefinite',
+    });
+    conn.appendChild(anim);
+    connGroup.appendChild(conn);
+
+    // Branch node
+    const bGroup = mkEl('g', { class: 'node-group', 'data-title': branch.label.replace('\n', ' '), 'data-desc': branch.children.map(c => c.label).join(' · '), 'data-tag': branch.children.length + ' sous-thèmes', 'data-color': branch.color });
+    const bBg = mkEl('circle', { cx: bx, cy: by, r: 44, fill: branch.color, class: 'node-bg', filter: `url(#glow-${branch.id}-shadow)`, opacity: .95 });
+    bGroup.appendChild(bBg);
+
+    const bLines = branch.label.split('\n');
+    bLines.forEach((line, i) => {
+      const t = mkEl('text', {
+        x: bx, y: by + (i - (bLines.length - 1) / 2) * 17,
+        'text-anchor': 'middle', 'dominant-baseline': 'middle',
+        fill: 'white', 'font-family': 'Syne, sans-serif',
+        'font-size': 12, 'font-weight': 700,
+      });
+      t.textContent = line;
+      bGroup.appendChild(t);
+    });
+    nodeGroup.appendChild(bGroup);
+
+    // Children
+    const childCount = branch.children.length;
+    branch.children.forEach((child, ci) => {
+      const spread = 72;
+      const baseAngle = angle - toRad(spread * (childCount - 1) / 2) + ci * toRad(spread);
+      const childDist = 155;
+      const chx = bx + Math.cos(baseAngle) * childDist;
+      const chy = by + Math.sin(baseAngle) * childDist;
+
+      // Connector branch → child
+      const ccp1x = bx + Math.cos(baseAngle) * childDist * 0.4;
+      const ccp1y = by + Math.sin(baseAngle) * childDist * 0.4;
+      const cConn = mkEl('path', {
+        d: `M ${bx} ${by} Q ${ccp1x} ${ccp1y} ${chx} ${chy}`,
+        fill: 'none', stroke: branch.color,
+        'stroke-width': 1.5, opacity: .35,
+      });
+      connGroup.appendChild(cConn);
+
+      // Child node
+      const cGroup = mkEl('g', { class: 'node-group', 'data-title': child.label, 'data-desc': child.desc, 'data-tag': child.tag, 'data-color': branch.color });
+      const cBg = mkEl('rect', {
+        x: chx - 52, y: chy - 22, width: 104, height: 44,
+        rx: 12, fill: '#131320', class: 'node-bg',
+        stroke: branch.color, 'stroke-width': 1.5, opacity: .95,
+      });
+      cGroup.appendChild(cBg);
+
+      const cText = mkEl('text', {
+        x: chx, y: chy,
+        'text-anchor': 'middle', 'dominant-baseline': 'middle',
+        fill: 'white', 'font-family': 'Instrument Sans, sans-serif',
+        'font-size': 11.5, 'font-weight': 500,
+      });
+      cText.textContent = child.label;
+      cGroup.appendChild(cText);
+
+      // Dot indicator color
+      const dot = mkEl('circle', { cx: chx - 42, cy: chy, r: 4, fill: branch.color });
+      cGroup.appendChild(dot);
+
+      nodeGroup.appendChild(cGroup);
+    });
+  });
+
+  // Tooltip interactions
+  const tooltip = document.getElementById('tooltip');
+  document.querySelectorAll('.node-group').forEach(node => {
+    node.addEventListener('mouseenter', (e) => {
+      const title = node.getAttribute('data-title');
+      const desc = node.getAttribute('data-desc');
+      const tag = node.getAttribute('data-tag');
+      const color = node.getAttribute('data-color');
+      document.getElementById('tt-title').textContent = title;
+      document.getElementById('tt-desc').textContent = desc;
+      const ttTag = document.getElementById('tt-tag');
+      ttTag.textContent = tag;
+      ttTag.style.background = color + '22';
+      ttTag.style.color = color;
+      ttTag.style.border = '1px solid ' + color + '44';
+      tooltip.classList.add('visible');
+    });
+    node.addEventListener('mousemove', (e) => {
+      let tx = e.clientX + 20, ty = e.clientY + 12;
+      if (tx + 270 > window.innerWidth) tx = e.clientX - 280;
+      if (ty + 140 > window.innerHeight) ty = e.clientY - 150;
+      tooltip.style.left = tx + 'px';
+      tooltip.style.top = ty + 'px';
+    });
+    node.addEventListener('mouseleave', () => tooltip.classList.remove('visible'));
+  });
+}
+
+// ── PAN & ZOOM ───────────────────────────────────────
+function updateTransform() {
+  g.setAttribute('transform', `translate(${vx},${vy}) scale(${scale})`);
+}
+updateTransform();
+
+let isPanning = false, panStart = { x: 0, y: 0 };
+const wrap = document.getElementById('canvas-wrap');
+
+wrap.addEventListener('mousedown', e => {
+  isPanning = true;
+  panStart = { x: e.clientX - vx, y: e.clientY - vy };
+  wrap.style.cursor = 'grabbing';
+});
+window.addEventListener('mousemove', e => {
+  if (!isPanning) return;
+  vx = e.clientX - panStart.x;
+  vy = e.clientY - panStart.y;
+  updateTransform();
+});
+window.addEventListener('mouseup', () => { isPanning = false; wrap.style.cursor = 'grab'; });
+
+wrap.addEventListener('wheel', e => {
+  e.preventDefault();
+  const delta = e.deltaY > 0 ? 0.9 : 1.1;
+  const newScale = Math.min(Math.max(scale * delta, 0.3), 2.5);
+  const rect = wrap.getBoundingClientRect();
+  const mx = e.clientX - rect.left;
+  const my = e.clientY - rect.top;
+  vx = mx - (mx - vx) * (newScale / scale);
+  vy = my - (my - vy) * (newScale / scale);
+  scale = newScale;
+  updateTransform();
+}, { passive: false });
+
+// Touch support
+let lastTouch = null;
+wrap.addEventListener('touchstart', e => {
+  if (e.touches.length === 1) {
+    isPanning = true;
+    panStart = { x: e.touches[0].clientX - vx, y: e.touches[0].clientY - vy };
+  }
+});
+wrap.addEventListener('touchmove', e => {
+  e.preventDefault();
+  if (e.touches.length === 1 && isPanning) {
+    vx = e.touches[0].clientX - panStart.x;
+    vy = e.touches[0].clientY - panStart.y;
+    updateTransform();
+  }
+}, { passive: false });
+wrap.addEventListener('touchend', () => { isPanning = false; });
+
+// ── INIT ─────────────────────────────────────────────
+window.addEventListener('load', () => {
+  setTimeout(drawMap, 100);
+});
+window.addEventListener('resize', () => {
+  // Redraw on resize
+  while (g.firstChild) g.removeChild(g.firstChild);
+  const c2 = mkEl('g', { id: 'connections' }); g.appendChild(c2);
+  const n2 = mkEl('g', { id: 'nodes' }); g.appendChild(n2);
+  drawMap();
+});
+</script>
+</body>
+</html>
